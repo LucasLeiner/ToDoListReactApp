@@ -8,10 +8,10 @@ class App extends React.Component{
     return (
       <div className="App relative flex flex-col h-[915px] w-[412px] border border-4 border-black rounded-2xl bg-gray-50">
 
-      <span className="absolute -right-2 top-20 border border-4 border-black h-10 rounded-md"></span>
-      <span className="absolute -right-2 top-44 border border-4 border-black h-24 rounded-md"></span>
-      <Header/>
-      <TaskList/>
+        <span className="absolute -right-2 top-20 border border-4 border-black h-10 rounded-md"></span>
+        <span className="absolute -right-2 top-44 border border-4 border-black h-24 rounded-md"></span>
+        <Header/>
+        <TaskList/>
       </div>
     );
   }
