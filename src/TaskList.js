@@ -8,19 +8,11 @@ class TaskList extends React.Component {
       tasks: tasksFromStorage || [
         { title: "1.Idée", isChecked: true },
         { title: "2.Marché", isChecked: true },
-        { title: "3.Wireframe", isChecked: true },
-        { title: "4.Design", isChecked: true },
-        { title: "5.Landingpage", isChecked: true },
-        { title: "6.Développement", isChecked: false },
-        { title: "7.Publish", isChecked: false },
-        { title: "8.Pub", isChecked: false },
-        { title: "9.Feedback", isChecked: false },
       ],
       newTaskTitle: "",
+      searchText: "",
     };
   }
-
-  
 
   handleCheck = (index) => {
     const tasks = [...this.state.tasks];
@@ -32,6 +24,10 @@ class TaskList extends React.Component {
 
   handleTitleChange = (event) => {
     this.setState({ newTaskTitle: event.target.value });
+  };
+
+  handleSearch = (event) => {
+    this.setState({ searchText: event.target.value });
   };
 
   handleAddTask = () => {
@@ -66,32 +62,65 @@ class TaskList extends React.Component {
     }
   };
 
+  handleDeleteTask = (index) => {
+    const tasks = [...this.state.tasks];
+    tasks.splice(index, 1);
+    this.setState({ tasks }, () => {
+      localStorage.setItem("tasks", JSON.stringify(this.state.tasks));
+    });
+  };
+
   render() {
+    const filteredTasks = this.state.tasks.filter(task =>
+      task.title.toLowerCase().includes(this.state.searchText.toLowerCase())
+    );
+
     return (
       <div>
+        <div>
+          <input
+            type="text"
+            value={this.state.searchText}
+            onChange={this.handleSearch}
+            placeholder="Search tasks"
+            className='rounded-lg p-2 mb-3'
+          />
+        </div>
         <ul>
-          {this.state.tasks.map((task, index) => (
+          {filteredTasks.map((task, index) => (
             <li key={index}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={task.isChecked}
-                  onChange={() => this.handleCheck(index)}
-                />
-                {task.title}
-              </label>
+              <div>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={task.isChecked}
+                    onChange={() => this.handleCheck(index)}
+                  />
+                  {task.title}
+                </label>
+                {index !== 0 && (
+                  <button onClick={() => this.handleMoveUp(index)}>▲</button>
+                )}
+                {index !== this.state.tasks.length - 1 && (
+                  <button onClick={() => this.handleMoveDown(index)}>▼</button>
+                )}
+                <button onClick={() => this.handleDeleteTask(index)}>Delete</button>
+              </div>
             </li>
           ))}
         </ul>
         <footer className="flex flex-row justify-center mb-0">
-          <textarea className="border-2 border-black"
+          <textarea
+            className="border-2 border-black m-10"
             value={this.state.newTaskTitle}
             onChange={this.handleTitleChange}
           />
-          <button onClick={this.handleAddTask} className="border-2 border-black p-2 m-2">Add task</button>
+          <button onClick={this.handleAddTask} className="border-2 border-black p-2 mt-10 mb-10 mr-10">
+            Add task
+          </button>
         </footer>
       </div>
     );
-  }
+  }  
 }
 export default TaskList;
